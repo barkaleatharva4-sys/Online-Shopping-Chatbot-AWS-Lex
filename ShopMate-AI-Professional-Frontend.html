@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ShopMate AI - Online Shopping Chatbot using Amazon Lex V2, AWS Lambda and CloudWatch.">
+<title>ShopMate AI | Online Shopping Chatbot</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+:root{--bg:#06101d;--card:#0b1727;--card2:#0e1d30;--text:#eef6ff;--muted:#91a4b8;--line:rgba(255,255,255,.09);--green:#64e7c4;--blue:#76a9ff}
+*{box-sizing:border-box;scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif}a{text-decoration:none;color:inherit}button{font:inherit;cursor:pointer}
+nav{position:sticky;top:0;z-index:10;height:72px;background:rgba(6,16,29,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 6%;}.logo{font:700 20px "Space Grotesk";display:flex;gap:10px;align-items:center}.logo b{color:var(--green)}.mark{width:35px;height:35px;border-radius:10px;background:rgba(100,231,196,.1);border:1px solid rgba(100,231,196,.25);display:grid;place-items:center}.links{display:flex;gap:25px;font-size:13px;color:var(--muted)}.links a:hover{color:white}.navbtn{border:1px solid var(--line);padding:9px 14px;border-radius:8px;font-size:13px}
+section{max-width:1180px;margin:auto;padding:95px 24px}.hero{min-height:650px;display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;position:relative}.hero:before{content:"";position:absolute;width:430px;height:430px;right:4%;top:8%;background:rgba(80,130,255,.13);filter:blur(90px);border-radius:50%;z-index:-1}.eyebrow{text-transform:uppercase;letter-spacing:.14em;color:#8ea5bd;font-size:11px;font-weight:700}.eyebrow span{color:var(--green)}h1,h2,h3{font-family:"Space Grotesk";margin:0}h1{font-size:clamp(52px,7vw,86px);line-height:.98;letter-spacing:-.055em;margin:18px 0 25px}h1 span,h2 span{color:var(--green)}.lead{font-size:17px;line-height:1.75;color:var(--muted);max-width:600px}.actions{display:flex;gap:12px;margin:30px 0}.primary,.secondary{padding:13px 18px;border-radius:9px;font-weight:700;font-size:13px;border:1px solid transparent}.primary{background:var(--green);color:#04131a}.secondary{border-color:var(--line);color:#dbe7f4}.hero-card{background:linear-gradient(150deg,#10243a,#091522);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 30px 80px rgba(0,0,0,.3)}.chat-head{display:flex;align-items:center;gap:11px;padding-bottom:16px;border-bottom:1px solid var(--line)}.avatar{width:42px;height:42px;border-radius:12px;background:rgba(100,231,196,.09);display:grid;place-items:center;color:var(--green);font-size:20px}.chat-head small{display:block;color:#71869c;font-size:11px;margin-top:3px}.chat{min-height:330px;padding:20px 4px;display:flex;flex-direction:column;gap:10px}.msg{max-width:80%;padding:10px 13px;border-radius:11px;font-size:12px;line-height:1.5}.bot{background:#12253a;border-top-left-radius:4px;color:#c9d8e8}.user{align-self:flex-end;background:#ddfff5;color:#12322b;border-top-right-radius:4px}.chat-open{width:100%;padding:12px;background:rgba(100,231,196,.07);border:1px solid rgba(100,231,196,.2);color:var(--green);border-radius:8px;font-weight:700}
+.band{max-width:none;border-block:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:0}.band div{padding:25px 5%;border-right:1px solid var(--line)}.band div:last-child{border:0}.band strong{display:block;font:600 15px "Space Grotesk";margin-bottom:5px}.band small{color:#71859a}
+.heading{max-width:700px}.heading.center{text-align:center;margin:auto}.heading p,.card p,.step p{color:var(--muted);line-height:1.7;font-size:14px}.heading h2{font-size:48px;letter-spacing:-.04em;margin:15px 0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:45px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:25px;min-height:220px}.icon{width:42px;height:42px;border-radius:10px;background:rgba(100,231,196,.07);border:1px solid rgba(100,231,196,.12);display:grid;place-items:center;color:var(--green);font-size:20px}.card h3{font-size:19px;margin:30px 0 8px}.number{float:right;color:#60758d;font-size:11px}
+.flow{display:grid;grid-template-columns:1fr 1.2fr;gap:70px;align-items:center}.steps{border-top:1px solid var(--line)}.step{display:grid;grid-template-columns:42px 1fr 20px;gap:15px;align-items:center;padding:20px 0;border-bottom:1px solid var(--line)}.stepnum{color:#657a91;font:600 11px "Space Grotesk"}.step h3{font-size:15px}.step p{font-size:12px;margin:5px 0 0}.arrow{color:#51677e}
+.arch{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:45px;flex-wrap:wrap}.node{width:190px;min-height:130px;background:var(--card);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}.node .icon{margin-bottom:2px}.node strong{font:600 14px "Space Grotesk"}.node small{color:#71859a}.arr{color:#526980}
+.darkbox{background:linear-gradient(110deg,rgba(100,231,196,.08),rgba(118,169,255,.06));border:1px solid rgba(100,231,196,.15);border-radius:18px;padding:45px}.darkbox h2{font-size:42px;margin:12px 0}.timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:35px}.timeline article{background:rgba(7,18,31,.6);border:1px solid var(--line);padding:20px;border-radius:12px}.timeline b{color:var(--green);font-size:12px}.timeline h3{margin:10px 0 7px;font-size:16px}.timeline p{color:var(--muted);font-size:12px;line-height:1.6;margin:0}
+footer{border-top:1px solid var(--line);max-width:1180px;margin:auto;padding:35px 24px 50px;display:flex;justify-content:space-between;color:#71859a;font-size:12px}footer strong{color:#d6e3ef}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:30;display:none;place-items:center;padding:18px}.modal.active{display:grid}.window{width:min(470px,100%);background:#0a1727;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 30px 100px #000}.windowhead{padding:15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.close{background:none;border:0;color:#9eb1c5;font-size:20px}.messages{height:390px;padding:18px;overflow:auto;display:flex;flex-direction:column;gap:10px}.quick{display:flex;gap:7px;flex-wrap:wrap;padding:0 15px 12px}.quick button{background:transparent;border:1px solid var(--line);color:#91a5ba;border-radius:20px;padding:7px 10px;font-size:11px}.input{display:flex;gap:8px;padding:12px 15px;border-top:1px solid var(--line)}.input input{flex:1;background:#07121f;border:1px solid var(--line);border-radius:8px;padding:11px;color:white;outline:0}.input button{width:42px;border:0;border-radius:8px;background:var(--green)}
+@media(max-width:850px){.links{display:none}.hero,.flow{grid-template-columns:1fr}.hero-card{display:none}.band{grid-template-columns:1fr 1fr}.band div:nth-child(2){border-right:0}.grid,.timeline{grid-template-columns:1fr}.arch{display:grid;grid-template-columns:1fr 1fr}.arr{display:none}.hero{min-height:auto;padding-top:75px}footer{flex-direction:column;gap:15px}}
+@media(max-width:520px){section{padding:75px 20px}.heading h2{font-size:39px}.hero h1{font-size:52px}.actions{flex-direction:column}.band{grid-template-columns:1fr}.band div{border-right:0;border-bottom:1px solid var(--line)}.band div:last-child{border-bottom:0}.arch{grid-template-columns:1fr}.darkbox{padding:30px 22px}.darkbox h2{font-size:34px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="#home"><span class="mark">🛍</span>ShopMate <b>AI</b></a>
+  <div class="links">
+    <a href="#about">About</a><a href="#features">Features</a><a href="#how">How It Works</a>
+    <a href="#aws">AWS</a><a href="#steps">Project Steps</a>
+  </div>
+  <a class="navbtn" href="https://github.com/" target="_blank">GitHub ↗</a>
+</nav>
+
+<main>
+<section class="hero" id="home">
+  <div>
+    <div class="eyebrow"><span>●</span> AWS-powered online shopping chatbot</div>
+    <h1>Shopping made<br><span>smarter.</span></h1>
+    <p class="lead">ShopMate AI is a conversational online shopping assistant designed with Amazon Lex V2 to collect customer details, understand product requirements, manage quantity and confirm the request.</p>
+    <div class="actions"><button class="primary" onclick="openChat()">Start Shopping →</button><a class="secondary" href="#about">Explore Project</a></div>
+  </div>
+  <div class="hero-card">
+    <div class="chat-head"><div class="avatar">🤖</div><div><strong>ShopMate AI</strong><small>● Online assistant</small></div></div>
+    <div class="chat">
+      <div class="msg bot">Welcome to online shopping. May I have your name?</div>
+      <div class="msg user">Atharva</div>
+      <div class="msg bot">Please provide your email ID.</div>
+      <div class="msg user">atharva@example.com</div>
+      <div class="msg bot">Which product do you want and what quantity?</div>
+    </div>
+    <button class="chat-open" onclick="openChat()">Open AI Assistant</button>
+  </div>
+</section>
+
+<div class="band">
+  <div><strong>Amazon Lex V2</strong><small>Conversation engine</small></div>
+  <div><strong>AWS Lambda</strong><small>Fulfillment & validation</small></div>
+  <div><strong>Amazon CloudWatch</strong><small>Monitoring & logs</small></div>
+  <div><strong>AWS CLI / Web UI</strong><small>Testing & management</small></div>
+</div>
+
+<section id="about">
+  <div class="heading"><div class="eyebrow">01 — Project Overview</div><h2>Online Shopping <span>Chatbot.</span></h2><p>The project implements a conversational shopping experience where the chatbot interacts with a customer, gathers required information and reaches a confirmation/fulfillment response.</p></div>
+  <div class="grid">
+    <article class="card"><span class="number">01</span><div class="icon">👤</div><h3>Customer Details</h3><p>Collect customer name, email ID, phone number and address as part of the conversation.</p></article>
+    <article class="card"><span class="number">02</span><div class="icon">📦</div><h3>Product Preferences</h3><p>Ask the customer for the product they want and the quantity required.</p></article>
+    <article class="card"><span class="number">03</span><div class="icon">✓</div><h3>Confirmation</h3><p>Confirm the collected request and provide a final fulfillment response.</p></article>
+  </div>
+</section>
+
+<section id="features">
+  <div class="heading center"><div class="eyebrow">02 — Core Features</div><h2>Everything in one <span>conversation.</span></h2><p>The website presents the complete chatbot functionality in a clear, professional interface.</p></div>
+  <div class="grid">
+    <article class="card"><div class="icon">💬</div><h3>Conversational Interaction</h3><p>Customers communicate naturally with the shopping assistant instead of navigating a complex form.</p></article>
+    <article class="card"><div class="icon">🧾</div><h3>Slot-Based Collection</h3><p>The Lex conversation can collect the required values through configured slots such as name, email, phone, address, product and quantity.</p></article>
+    <article class="card"><div class="icon">⚡</div><h3>Fulfillment</h3><p>After the required information and confirmation are received, the bot reaches its fulfillment response.</p></article>
+  </div>
+</section>
+
+<section id="how">
+  <div class="flow">
+    <div class="heading"><div class="eyebrow">03 — How It Works</div><h2>From hello to <span>confirmation.</span></h2><p>The documented conversation flow is represented below as a simple customer journey.</p></div>
+    <div class="steps">
+      <div class="step"><span class="stepnum">01</span><div><h3>Customer starts the conversation</h3><p>The user begins an online shopping interaction.</p></div><span class="arrow">›</span></div>
+      <div class="step"><span class="stepnum">02</span><div><h3>Name, email, phone & address</h3><p>The bot collects customer information through slots.</p></div><span class="arrow">›</span></div>
+      <div class="step"><span class="stepnum">03</span><div><h3>Product & quantity</h3><p>The customer provides the desired product and quantity.</p></div><span class="arrow">›</span></div>
+      <div class="step"><span class="stepnum">04</span><div><h3>Confirmation & fulfillment</h3><p>The request is confirmed and the final response is returned.</p></div><span class="arrow">✓</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="aws">
+  <div class="heading center"><div class="eyebrow">04 — AWS Architecture</div><h2>Built with <span>AWS.</span></h2><p>The project report identifies Amazon Lex V2, AWS Lambda and Amazon CloudWatch as core services. DynamoDB and S3 are listed as optional storage services.</p></div>
+  <div class="arch">
+    <div class="node"><div class="icon">🛍</div><strong>ShopMate UI</strong><small>Web Interface</small></div><span class="arr">→</span>
+    <div class="node"><div class="icon">🤖</div><strong>Amazon Lex V2</strong><small>Conversation & intents</small></div><span class="arr">→</span>
+    <div class="node"><div class="icon">λ</div><strong>AWS Lambda</strong><small>Fulfillment</small></div><span class="arr">→</span>
+    <div class="node"><div class="icon">☁</div><strong>CloudWatch</strong><small>Monitoring & logs</small></div>
+  </div>
+  <div class="arch" style="margin-top:15px">
+    <div class="node"><div class="icon">🗄</div><strong>DynamoDB</strong><small>Optional storage</small></div>
+    <div class="node"><div class="icon">▣</div><strong>Amazon S3</strong><small>Optional storage</small></div>
+  </div>
+</section>
+
+<section id="lex">
+  <div class="heading"><div class="eyebrow">05 — Amazon Lex V2</div><h2>Conversation <span>intelligence.</span></h2><p>Amazon Lex V2 is the chatbot service used for the project's conversational flow. The project configures a bot, language, intent, sample utterances and slots before building and testing it.</p></div>
+  <div class="grid">
+    <article class="card"><div class="icon">🎯</div><h3>Intent</h3><p>The shopping intent represents the customer's online shopping request and controls the conversation flow.</p></article>
+    <article class="card"><div class="icon">🔤</div><h3>Sample Utterances</h3><p>Example customer phrases are configured so Lex can recognize how users may start the shopping interaction.</p></article>
+    <article class="card"><div class="icon">🧩</div><h3>Slots</h3><p>Slots are used to collect required customer and order values during the conversation.</p></article>
+  </div>
+</section>
+
+<section id="steps">
+  <div class="darkbox">
+    <div class="eyebrow">06 — Implementation Guide</div>
+    <h2>Project setup <span>steps.</span></h2>
+    <p class="lead">The following nine stages follow the structure documented in the project report.</p>
+    <div class="timeline">
+      <article><b>STEP 01</b><h3>Sign in to AWS Lex V2</h3><p>Open Amazon Lex V2 through the AWS Management Console.</p></article>
+      <article><b>STEP 02</b><h3>Configure Bot Settings</h3><p>Configure the initial bot settings and basic information.</p></article>
+      <article><b>STEP 03</b><h3>Add Language</h3><p>Add and configure the language used by the bot.</p></article>
+      <article><b>STEP 04</b><h3>Add Intent Details</h3><p>Configure the shopping intent and its conversation behavior.</p></article>
+      <article><b>STEP 05</b><h3>Add Sample Utterances</h3><p>Add example phrases customers may use to start the intent.</p></article>
+      <article><b>STEP 06</b><h3>Build Bot</h3><p>Build the Lex bot after configuring its conversation resources.</p></article>
+      <article><b>STEP 07</b><h3>Test Draft</h3><p>Use the Lex test interface to check the draft conversation.</p></article>
+      <article><b>STEP 08</b><h3>Add Slots</h3><p>Configure customer and product information slots required by the flow.</p></article>
+      <article><b>STEP 09</b><h3>Build, Update & Test</h3><p>Build the final bot, update resources and test the completed conversation.</p></article>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="heading center"><div class="eyebrow">07 — Technology Stack</div><h2>Project <span>technologies.</span></h2></div>
+  <div class="grid">
+    <article class="card"><div class="icon">🌐</div><h3>HTML / CSS / JavaScript</h3><p>Professional responsive web interface for presenting and interacting with the chatbot.</p></article>
+    <article class="card"><div class="icon">☁</div><h3>AWS Services</h3><p>Amazon Lex V2, AWS Lambda and Amazon CloudWatch form the documented AWS foundation.</p></article>
+    <article class="card"><div class="icon">🛠</div><h3>Testing Tools</h3><p>AWS CLI and Lex Web UI are included in the documented project testing approach.</p></article>
+  </div>
+</section>
+
+<section>
+  <div class="heading center"><div class="eyebrow">08 — Project Outcome</div><h2>A complete conversational <span>shopping flow.</span></h2><p>The finished project demonstrates how a customer can move from an initial greeting through information collection, product selection, quantity and confirmation.</p></div>
+</section>
+
+<section>
+  <div class="darkbox" style="display:flex;align-items:center;justify-content:space-between;gap:30px">
+    <div><div class="eyebrow">09 — Try It</div><h2>Experience ShopMate <span>AI.</span></h2><p class="lead">Open the assistant and explore the shopping conversation.</p></div>
+    <button class="primary" onclick="openChat()">Launch Assistant →</button>
+  </div>
+</section>
+</main>
+
+<footer><div><strong>ShopMate AI</strong> — Online Shopping Chatbot</div><div>Amazon Lex V2 • AWS Lambda • CloudWatch</div><a href="https://github.com/" target="_blank">View GitHub ↗</a></footer>
+
+<div class="modal" id="modal">
+  <div class="window">
+    <div class="windowhead"><strong>🤖 ShopMate AI</strong><button class="close" onclick="closeChat()">×</button></div>
+    <div class="messages" id="messages">
+      <div class="msg bot">Welcome to ShopMate AI. May I have your name?</div>
+    </div>
+    <div class="quick">
+      <button onclick="send('I want to shop')">I want to shop</button>
+      <button onclick="send('Show me how it works')">How it works</button>
+      <button onclick="send('Start shopping')">Start shopping</button>
+    </div>
+    <form class="input" onsubmit="event.preventDefault();send(document.getElementById('input').value);document.getElementById('input').value=''">
+      <input id="input" placeholder="Type your message..."><button>➤</button>
+    </form>
+  </div>
+</div>
+
+<script>
+function openChat(){document.getElementById('modal').classList.add('active')}
+function closeChat(){document.getElementById('modal').classList.remove('active')}
+function send(text){
+ if(!text||!text.trim())return;
+ const box=document.getElementById('messages');
+ box.innerHTML+=`<div class="msg user">${escapeHtml(text)}</div>`;
+ let reply="Demo mode: your message was received. Connect this interface to the live Amazon Lex V2 backend to process the complete shopping flow.";
+ const t=text.toLowerCase();
+ if(t.includes("shop")) reply="Great! May I have your name?";
+ if(t.includes("work")) reply="ShopMate collects customer details, asks for the product and quantity, then confirms the request.";
+ setTimeout(()=>{box.innerHTML+=`<div class="msg bot">${reply}</div>`;box.scrollTop=box.scrollHeight},500);
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeChat()});
+</script>
+</body>
+</html>
